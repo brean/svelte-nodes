@@ -12,13 +12,13 @@
   </Group>
 
   <Group name="outer2">
-    <Group name="inner2a">
+    <Group name="inner2a" x={220}>
       <Node></Node>
     </Group>
 
     <Group name="inner2b">
       <Node></Node>
-      <Node></Node>
+      <Node y={200}></Node>
     </Group>
   </Group>
 </NodeGraph>

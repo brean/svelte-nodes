@@ -11,7 +11,9 @@
   export let padding: number = 10;
 
   const parent = getContext<IGroup | IGraph>('parent')
-  const _id = parent.id ? `${parent.id}/${parent.children.length}` : `${parent.children.length}`;
+  const _id = parent.id ?
+    `${parent.id}/${parent.children.length}` :
+    `${parent.children.length}`;
   const group: IGroup = {
     id: _id,
     name: name,
@@ -33,5 +35,10 @@
     width="{width+padding*2}"
     height="{height+padding*2}"
     rx="10" fill="lightgray" stroke="black" stroke-width="4" />
+  <foreignObject x={padding} y={padding} width={width} height={20} pointer-events="none">
+    <div>
+      { name }
+    </div>
+  </foreignObject>
   <slot />
 </g>
