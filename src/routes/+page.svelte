@@ -1,24 +1,41 @@
 <script lang="ts">
   import NodeGraph from "$lib/components/NodeGraph.svelte";
-  import Group from "$lib/components/Group.svelte";
-  import Node from "$lib/components/Node.svelte";
 
+  const data = {
+    name: 'root',
+    children: [
+      {
+        name: 'outer1',
+        children: [{
+          name: 'inner1',
+          children: [{
+            name: 'node1',
+          }]
+        }]
+      },
+      {
+        name: 'outer2',
+        children: [{
+          name: 'inner2a',
+          children: [
+            {
+              name: 'node2a1'
+            }
+          ]
+        },
+        {
+          name: 'inner2b',
+          children: [
+            {
+              name: 'node2b1'
+            },
+            {
+              name: 'node2b2'
+            }]
+        }]
+      }
+    ]
+  }
 </script>
-<NodeGraph>
-  <Group name="outer">
-    <Group name="inner">
-      <Node></Node>
-    </Group>
-  </Group>
-
-  <Group name="outer2">
-    <Group name="inner2a" x={220}>
-      <Node></Node>
-    </Group>
-
-    <Group name="inner2b">
-      <Node></Node>
-      <Node y={200}></Node>
-    </Group>
-  </Group>
+<NodeGraph data={data}>
 </NodeGraph>

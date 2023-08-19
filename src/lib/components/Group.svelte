@@ -1,6 +1,5 @@
 <script lang="ts">
   import type IGroup from '$lib/model/IGroup';
-  import type IGraph from '$lib/model/IGraph';
   import { getContext, setContext } from 'svelte';
 
   export let name: string = 'MyGroup'
@@ -10,7 +9,7 @@
   export let y: number = 20;
   export let padding: number = 10;
 
-  const parent = getContext<IGroup | IGraph>('parent')
+  const parent = getContext<IGroup>('parent')
   const _id = parent.id ?
     `${parent.id}/${parent.children.length}` :
     `${parent.children.length}`;
