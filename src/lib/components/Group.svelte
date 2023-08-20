@@ -1,6 +1,6 @@
 <script lang="ts">
-  import type IGroup from '$lib/model/IGroup';
-  import { getContext, setContext } from 'svelte';
+  import type IElement from '$lib/data/IElement';
+  import type IGroup from '$lib/data/IGroup';
 
   export let name: string = 'MyGroup'
   export let width: number = 100;
@@ -8,24 +8,15 @@
   export let x: number = 20;
   export let y: number = 20;
   export let padding: number = 10;
-
-  const parent = getContext<IGroup>('parent')
-  const _id = parent.id ?
-    `${parent.id}/${parent.children.length}` :
-    `${parent.children.length}`;
-  const group: IGroup = {
-    id: _id,
-    name: name,
-    children: [],
-    x: x,
-    y: y,
-    width: width,
-    height: height,
-    padding: padding
+  export let group:IGroup;
+  if (group) {
+    name = group.name
+    width = group.width || width
+    height = group.height || height
   }
+  let children: IElement[] = group.children ? group.children : []
 
-  parent.children.push(group);
-  setContext('parent', group);
+
 </script>
 
 <g transform="translate({x-padding}, {y-padding})">
@@ -40,4 +31,7 @@
     </div>
   </foreignObject>
   <slot />
+  {#each children as child}
+    <svelte:self group={child} />
+  {/each }
 </g>

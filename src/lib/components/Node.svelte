@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getContext } from "svelte";
-  import type INode from '$lib/model/INode';
-  import type IGroup from "$lib/model/IGroup";
+  import type INode from '$lib/data/INode';
+  import type IGroup from "$lib/data/IGroup";
 
   export let name: string = 'MyNode'
   export let width: number = 100;

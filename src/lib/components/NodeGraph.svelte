@@ -1,13 +1,15 @@
 <script lang="ts">
-  import type IElement from "$lib/model/IElement";
-  import type IGroup from "$lib/model/IGroup";
-  import type INode from "$lib/model/INode";
+  import type IElement from "$lib/data/IElement";
+  import type IGroup from "$lib/data/IGroup";
+  import type INode from "$lib/data/INode";
+  import Group from "./Group.svelte";
 
   export let data: any;
   // list of all nodes from flattend graph
   let nodes: INode[] = [];
 
   const MIN_NODE_WIDTH = 100;
+  const DEFAULT_DIRECTION = "HORIZONTAL";
 
   let globalGroupCounter = 0;
   let globalNodeCounter = 0;
@@ -29,7 +31,8 @@
       y: undefined,
       width: undefined,
       height: undefined,
-      padding: undefined
+      padding: undefined,
+      direction: data?.direction || DEFAULT_DIRECTION
     }
   }
 
@@ -50,12 +53,12 @@
   }
 
   function graphFromData(data: any): IGroup {
+    nodes = [];
     // crate root group for the whole graph
     const graph: IGroup = createGroup()
 
     // get list of all nodes and re-create graph struction
-    // with parents so we can calulate the width of the parents and
-    // create unique ids based on order inside graph
+    // with parents so we create unique ids based on order inside graph
     let currentData: any[] = [data];
     let currentParents: IGroup[] = [graph];
     while (currentData.length > 0) {
@@ -71,24 +74,67 @@
             nextParents.push(grp);
             parent.children.push(grp);
           } else {
-            // A node has a fixed width/height for now
             const node: INode = createNode(child, parent)
             nodes.push(node);
             parent.children.push(node);
           }
         }
       }
-      currentParents = nextParents
-      currentData = nextData
+      currentParents = nextParents;
+      currentData = nextData;
     }
     return graph
   }
+
+  function calculateGraph(graph: IGroup) {
+    let maxIter = 100
+    let currentGroup = [graph];
+    while (currentGroup.length > 0 || maxIter == 0) {
+      maxIter--;
+      const nextGroup: IGroup[] = [];
+      for (const current of currentGroup) {
+        if (current.children) {
+          let knownChildDimensions = true
+          // check, if childrens width/height is fixed or calculated
+          // if not add it to the front of the currentGroup-list so its
+          // children can be calculated next time
+          let width = 0
+          let height = 0
+          let padding = current.padding ? current.padding : 10;
+          for (const child of current.children) {
+            if (child.width && child.height) {
+              if (current.direction == "HORIZONTAL") {
+                width += child.width;
+                height = Math.max(child.height, height);
+              } else {// VERTICAL
+                width = Math.max(child.width, width);
+                height += height;
+              }
+            } else {
+              nextGroup.push(child as IGroup);
+              knownChildDimensions = false;
+            }
+          }
+          if (knownChildDimensions) {
+            current.width = width + padding * 2
+            current.height = height + padding * 2
+            if (current.parent) {
+              // now that we calculated this we might also be able 
+              // to calculate the parent
+              nextGroup.push(current.parent as IGroup)
+            }
+          }
+        }
+      }
+      currentGroup = nextGroup;
+    }
+  }
+
   const graph = graphFromData(data);
-  console.log(nodes);
-  console.log(graph);
-  // TODO: starting with the nodes, calculate width/height of all elements
-  // default directions: left-to-right, single groups overwrite this by 
-  // setting direction to top-to-bottom
+  // render graph
+  calculateGraph(graph)
+  console.log(graph)
+
   // TODO: function to re-create json from graph.
 
   // drag-and-drop
@@ -154,5 +200,7 @@
     on:pointerdown={onPointerDown}
     on:pointermove={onPointerMove}
     on:pointerup={onPointerUp}>
+  <!-- render graph -->
   <slot />
+  <Group group={graph} />
 </svg>
