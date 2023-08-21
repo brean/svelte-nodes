@@ -22,7 +22,6 @@ export default class Group extends VisualElement {
     id: string;
     name: string;
     children: any[];
-    parent: Group | null,
     direction: "HORIZONTAL" | "VERTICAL";
     x?: number;
     y?: number;
@@ -30,9 +29,9 @@ export default class Group extends VisualElement {
     height?: number;
     padding?: number;
   }): Group {
-     const { id, name, children, parent, direction, x, y, width, height, padding } = data;
+     const { id, name, children, direction, x, y, width, height, padding } = data;
     // TODO: iterate over chilren to create instances
-    const group = new Group(id, name, children, parent, direction);
+    const group = new Group(id, name, direction, children);
     VisualElement.fromJSON(group, { x, y, width, height, padding });
     return group;
   }
