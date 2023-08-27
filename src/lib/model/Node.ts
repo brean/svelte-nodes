@@ -1,24 +1,28 @@
 import VisualElement from "./VisualElement";
 import type Group from "./Group";
 
+let globalCounter = 0;
+
 export default class Node extends VisualElement {
-  parent: Group | null;
 
   constructor(
     id: string,
     name: string,
-    parent: Group | null
+    parent?: Group
   ) {
-    super(id, name);
-    this.parent = parent;
+    globalCounter++;
+    name = name || `node${globalCounter}`;
+    id = id || parent == null ?
+      `n${globalCounter}` :
+      `${parent.id}/n${globalCounter}`;
+    super(id, name, parent);
   }
 
   static fromJSON(data: {
     id: string;
     name: string;
-    parent: Group | null;
-  }): Node {
-    const { id, name, parent } = data;
+  }, parent?: Group): Node {
+    const { id, name } = data;
     return new Node(id, name, parent);
   }
 }

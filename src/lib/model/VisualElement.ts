@@ -7,15 +7,17 @@ export default class VisualElement {
   width: number | undefined;
   height: number | undefined;
   needsUpdate: boolean = true;
+  parent: VisualElement | undefined;
 
   constructor(
     id: string,
     name: string,
+    parent?: VisualElement,
     x: number = 0,
     y: number = 0,
     width?: number,
     height?: number,
-    padding: number = 10
+    padding: number = 10,
   ) {
     this.id = id;
     this.name = name;
@@ -24,6 +26,7 @@ export default class VisualElement {
     this.width = width;
     this.height = height;
     this.padding = padding;
+    this.parent = parent;
   }
 
   toJSON(): any {
@@ -38,15 +41,15 @@ export default class VisualElement {
     };
   }
 
-  static fromJSON(element: VisualElement, json: any): void {
-    element.x = json.x;
-    element.y = json.y;
-    element.width = json.width;
-    element.height = json.height;
-    element.padding = json.padding;
+  updateVisualElement(json: any): void {
+    this.x = json.x;
+    this.y = json.y;
+    this.width = json.width;
+    this.height = json.height;
+    this.padding = json.padding;
   }
 
-  calculateWidth() {
+  calculateDimensions() {
     return
   }
 }

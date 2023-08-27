@@ -1,37 +1,30 @@
 <script lang="ts">
-  import type IElement from '$lib/data/IElement';
-  import type IGroup from '$lib/data/IGroup';
-
-  export let name: string = 'MyGroup'
-  export let width: number = 100;
-  export let height: number = 100;
-  export let x: number = 20;
-  export let y: number = 20;
-  export let padding: number = 10;
-  export let group:IGroup;
-  if (group) {
-    name = group.name
-    width = group.width || width
-    height = group.height || height
-  }
-  let children: IElement[] = group.children ? group.children : []
-
-
+  import GroupModel from '$lib/model/Group';
+  import type NodeModel from '$lib/model/Node';
+  import Node from './Node.svelte';
+  export let group:GroupModel;
+  let groupChildren = group.children
 </script>
 
-<g transform="translate({x-padding}, {y-padding})">
+<g transform="translate({group.x+group.padding}, {group.y+group.padding})">
   <rect
     id="{group.id}"
-    width="{width+padding*2}"
-    height="{height+padding*2}"
+    width="{group.width}"
+    height="{group.height}"
     rx="10" fill="lightgray" stroke="black" stroke-width="4" />
-  <foreignObject x={padding} y={padding} width={width} height={20} pointer-events="none">
+  <foreignObject x={group.padding} y={group.padding} width={group.width} height={20} pointer-events="none">
     <div>
-      { name }
+      { group.name }
     </div>
   </foreignObject>
   <slot />
-  {#each children as child}
-    <svelte:self group={child} />
-  {/each }
+  {#if groupChildren}
+    {#each groupChildren as child}
+      {#if child instanceof GroupModel}
+      <svelte:self group={child} />
+      {:else}
+        <Node node={child} />
+      {/if}
+    {/each }
+  {/if}
 </g>
