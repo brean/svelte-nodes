@@ -1,11 +1,11 @@
 export default class VisualElement {
   id: string;
   name: string;
-  x: number;
-  y: number;
-  padding: number;
-  width: number | undefined;
-  height: number | undefined;
+  x?: number;
+  y?: number;
+  padding?: number;
+  width?: number;
+  height?: number;
   needsUpdate: boolean = true;
   parent: VisualElement | undefined;
 

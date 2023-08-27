@@ -4,9 +4,12 @@
   import Node from './Node.svelte';
   export let group:GroupModel;
   let groupChildren = group.children
+  const x = group.x || 0
+  const y = group.y || 0
+  const padding = group.padding || 0
 </script>
 
-<g transform="translate({group.x+group.padding}, {group.y+group.padding})">
+<g transform="translate({x + padding}, {y + padding})">
   <rect
     id="{group.id}"
     width="{group.width}"
