@@ -3,12 +3,13 @@ import Node from "./Node";
 
 let globalCounter = 0;
 
-const MINIMUM_CHILD_WIDTH = 100
-const MINIMUM_CHILD_HEIGHT = 100
+const MINIMUM_CHILD_WIDTH = 100;
+const MINIMUM_CHILD_HEIGHT = 20;
 
 export default class Group extends VisualElement {
   children?: VisualElement[];
   direction: "HORIZONTAL" | "VERTICAL";
+  spacing: number;
 
   constructor(
     id: string,
@@ -16,6 +17,7 @@ export default class Group extends VisualElement {
     children?: VisualElement[],
     parent?: Group,
     direction: "HORIZONTAL" | "VERTICAL" = "HORIZONTAL",
+    spacing: number = 10
   ) {
     globalCounter++;
     name = name || `group${globalCounter}`;
@@ -25,6 +27,7 @@ export default class Group extends VisualElement {
     super(id, name, parent);
     this.children = children;
     this.direction = direction;
+    this.spacing = spacing;
   }
 
   static fromJSON(data: {
@@ -37,9 +40,10 @@ export default class Group extends VisualElement {
     width?: number;
     height?: number;
     padding?: number;
+    spacing?: number;
   }, parent?: Group): Group {
-    const { id, name, children, direction, x, y, width, height, padding } = data;
-    const group = new Group(id, name, undefined, parent, direction);
+    const { id, name, children, direction, x, y, width, height, padding, spacing } = data;
+    const group = new Group(id, name, undefined, parent, direction, spacing);
     const groupChildren: VisualElement[] = [];
     for (const child of children) {
       let elem: VisualElement;
@@ -69,6 +73,33 @@ export default class Group extends VisualElement {
 
   getChildById(_id: string): VisualElement | undefined {
     return this.children?.find((value) => value.id === _id)
+  }
+
+  calculatePositions() {
+    if (!this.children) {
+      return
+    }
+
+
+    let current = this.padding || 10
+    for (const child of this.children) {
+      if (this.direction == 'HORIZONTAL') {
+        child.x = current;
+        child.calculatePositions();
+        current += (child.width || MINIMUM_CHILD_WIDTH) + this.spacing;
+      } else {
+        child.y = current;
+        child.calculatePositions();
+        child.x = this.padding || 0;
+        current += (child.height || MINIMUM_CHILD_HEIGHT) + this.spacing;
+      }
+    }
+    if (this.direction == 'HORIZONTAL') {
+      this.width = Math.max(this.width || 0, current + (this.padding || 10));
+    } else {
+      this.height = Math.max(this.height || 0, current + (this.padding || 10));
+    }
+    super.calculatePositions()
   }
 
   calculateDimensions() {
@@ -101,5 +132,6 @@ export default class Group extends VisualElement {
     let padding = this.padding ? this.padding : 10;
     this.width = totalWidth + padding * 2;
     this.height = totalHeight + padding * 2;
+    super.calculateDimensions()
   }
 }

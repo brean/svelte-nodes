@@ -25,4 +25,12 @@ export default class Node extends VisualElement {
     const { id, name } = data;
     return new Node(id, name, parent);
   }
+
+
+  calculatePositions() {
+    super.calculatePositions()
+    if (this.parent?.showName) {
+      this.y = this.y ? this.y + 10 : 10;
+    }
+  }
 }

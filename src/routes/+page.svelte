@@ -25,13 +25,18 @@
         },
         {
           name: 'inner2b',
+          direction: 'VERTICAL',
           children: [
             {
               name: 'node2b1'
             },
             {
               name: 'node2b2'
-            }]
+            },
+            {
+              name: 'node2b3'
+            }
+          ]
         }]
       }
     ]

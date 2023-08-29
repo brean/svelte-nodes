@@ -1,23 +1,20 @@
 <script lang="ts">
-  import type IElement from "$lib/data/IElement";
   import GroupModel from "$lib/model/Group";
   import Group from "$lib/components/Group.svelte"
+  import type VisualElement from "$lib/model/VisualElement";
 
   export let data: any;
 
   const graph = GroupModel.fromJSON(data);
   // render graph
   graph.calculateDimensions();
-  // TODO: calculate positions
-  console.log(graph);
-
-  // TODO: function to re-create json from graph.
+  graph.calculatePositions();
 
   // drag-and-drop
   // The visual element that is being moved by the mouse
   let moveElement: any;
   // The data of the element we move around, IElement or IGroup instance
-  let moveElementData: GroupModel | undefined;
+  let moveElementData: VisualElement | undefined;
 
   const startPosition = {
     x: 0,
@@ -32,9 +29,11 @@
       return
     }
     const key: string = e.target.id;
-    let data: any = graph;
+    let data: VisualElement | undefined = graph;
     for (let k of key.split('/').slice(1)) {
-      data = data.getChildById(data.id + '/' + k);
+      if (data instanceof GroupModel) {
+        data = (data as GroupModel).getChildById(data.id + '/' + k);
+      }
     }
     moveElementData = data;
     moveElement = e.target.parentElement; // the <g> around the visual element
@@ -43,27 +42,23 @@
   }
 
   const onPointerMove = (e: any) => {
-    if (
-        !moveElementData || !moveElement || 
-        !moveElementData.x || !moveElementData.y) {
+    if (!moveElementData || !moveElement) {
       return
     }
-    const x = e.clientX - startPosition.x + moveElementData.x;
-    const y = e.clientY - startPosition.y + moveElementData.y;
+
+    const x = e.clientX - startPosition.x + (moveElementData.x || 0);
+    const y = e.clientY - startPosition.y + (moveElementData.y || 0);
     moveElement.setAttribute('transform', `translate(${x}, ${y})`)
   }
 
   const onPointerUp = (e: any) => {
-    if (
-        !moveElementData || !moveElement || 
-        !moveElementData.x || !moveElementData.y) {
+    if (!moveElementData || !moveElement) {
       return
     }
-    const x = e.clientX - startPosition.x + moveElementData.x;
-    const y = e.clientY - startPosition.y + moveElementData.y;
+    const x = e.clientX - startPosition.x + (moveElementData.x || 0);
+    const y = e.clientY - startPosition.y + (moveElementData.y || 0)
     moveElementData.x = x;
     moveElementData.y = y;
-
     moveElement = undefined;
     moveElementData = undefined;
     startPosition.x = 0
