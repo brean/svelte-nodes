@@ -1,4 +1,4 @@
-import VisualElement from "./VisualElement";
+import {VisualElement} from "./VisualElement";
 import type Group from "./Group";
 
 let globalCounter = 0;
@@ -24,13 +24,5 @@ export default class Node extends VisualElement {
   }, parent?: Group): Node {
     const { id, name } = data;
     return new Node(id, name, parent);
-  }
-
-
-  calculatePositions() {
-    super.calculatePositions()
-    if (this.parent?.showName) {
-      this.y = this.y ? this.y + 10 : 10;
-    }
   }
 }

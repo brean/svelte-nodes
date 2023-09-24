@@ -1,17 +1,19 @@
-const MIN_WIDTH = 100;
-const MIN_HEIGHT = 20;
+export const MIN_WIDTH = 100;
+export const MIN_HEIGHT = 10;
+export const DEFAULT_PADDING = 4;
 
-export default class VisualElement {
+export class VisualElement {
   id: string;
   name: string;
   x?: number;
   y?: number;
   padding?: number; // space between the border and the content
   width?: number; // full width including padding
-  height?: number;
+  height?: number; // full height including padding
   needsUpdate: boolean = true;
   showName: boolean = true;
-  parent: VisualElement | undefined;
+  nameHeight: number = 20;
+  parent?: VisualElement;
 
   constructor(
     id: string,
@@ -21,7 +23,7 @@ export default class VisualElement {
     y: number = 0,
     width?: number,
     height?: number,
-    padding: number = 10,
+    padding: number = DEFAULT_PADDING,
     showName: boolean = true
   ) {
     this.id = id;
@@ -62,21 +64,21 @@ export default class VisualElement {
     if (!this.width) {
       this.width = MIN_WIDTH;
     }
-    this.height += this.padding || 10;
+    this.height += this.padding || DEFAULT_PADDING;
     if (this.showName) {
-      this.height += 20;
+      this.height += this.nameHeight;
     }
   }
 
   calculatePositions() {
     if (!this.x) {
-      this.x = 0
+      this.x = 0;
     }
     if (!this.y) {
-      this.y = 0
+      this.y = 0;
     }
     if (this.parent?.showName) {
-      this.y += 20;
+      this.y += this.nameHeight;
     }
   }
 }

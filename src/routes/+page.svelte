@@ -35,8 +35,30 @@
             },
             {
               name: 'node2b3'
+            },
+            {
+              name: 'node2b4'
+            },
+            {
+              name: 'node2b5'
             }
           ]
+        },
+        {
+          name: 'inner2c',
+          children: [
+            {
+              name: 'node2c1'
+            },
+            {
+              name: 'node2c2'
+            }
+          ]
+        },
+        {
+          name: 'no_children',
+          width: 300,
+          children: []
         }]
       }
     ]

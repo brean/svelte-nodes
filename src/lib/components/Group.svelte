@@ -1,7 +1,7 @@
 <script lang="ts">
   import GroupModel from '$lib/model/Group';
-  import NodeModel from '$lib/model/Node';
   import Node from './Node.svelte';
+
   export let group:GroupModel;
   let groupChildren = group.children
   const x = group.x || 0
@@ -14,7 +14,7 @@
     id={group.id}
     width={group.width}
     height={group.height}
-    rx="10" fill="lightgray" stroke="black" stroke-width="4" />
+    rx="4" fill="lightgray" stroke="black" stroke-width="1" />
   <foreignObject x={group.padding} y={group.padding} width={group.width} height={20} pointer-events="none">
     <div>
       { group.name }

@@ -1,7 +1,7 @@
 <script lang="ts">
   import GroupModel from "$lib/model/Group";
   import Group from "$lib/components/Group.svelte"
-  import type VisualElement from "$lib/model/VisualElement";
+  import type {VisualElement} from "$lib/model/VisualElement";
 
   export let data: any;
 
