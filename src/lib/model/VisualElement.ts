@@ -78,7 +78,7 @@ export class VisualElement {
       this.y = 0;
     }
     if (this.parent?.showName) {
-      this.y += this.nameHeight;
+      this.y += this.parent.nameHeight + (this.parent.padding || 0);
     }
   }
 }
