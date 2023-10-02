@@ -17,7 +17,8 @@
     id={node.id}
     width={width}
     height={height}
-    rx="7" fill="green" stroke="black" stroke-width="1" />
+    class="node"
+    rx="7" stroke-width="1" />
   <foreignObject x={padding} y={padding} width={width} height={height} pointer-events="none">
     <div>
       { node.name }

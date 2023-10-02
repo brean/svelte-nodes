@@ -9,8 +9,9 @@ const MINIMUM_CHILD_HEIGHT = 20;
 
 export default class Group extends VisualElement {
   children?: VisualElement[];
-  direction: "HORIZONTAL" | "VERTICAL";
+  direction: "HORIZONTAL" | "VERTICAL" = 'HORIZONTAL';
   spacing: number;
+  dragAndDropBehavior: 'default' | 'ordering' = 'default';
 
   constructor(
     id: string,
@@ -18,6 +19,7 @@ export default class Group extends VisualElement {
     children?: VisualElement[],
     parent?: Group,
     direction: "HORIZONTAL" | "VERTICAL" = "HORIZONTAL",
+    dragAndDropBehavior: 'default' | 'ordering' = 'default',
     spacing: number = DEFAULT_SPACING
   ) {
     globalCounter++;
@@ -29,6 +31,7 @@ export default class Group extends VisualElement {
     this.children = children;
     this.direction = direction;
     this.spacing = spacing;
+    this.dragAndDropBehavior = dragAndDropBehavior;
   }
 
   static fromJSON(data: {
@@ -41,10 +44,13 @@ export default class Group extends VisualElement {
     width?: number;
     height?: number;
     padding?: number;
+    dragAndDropBehavior?: 'default' | 'ordering',
     spacing?: number;
   }, parent?: Group): Group {
-    const { id, name, children, direction, x, y, width, height, padding, spacing } = data;
-    const group = new Group(id, name, undefined, parent, direction, spacing);
+    const { id, name, children, direction, x, y, width, height, padding,dragAndDropBehavior, spacing } = data;
+    const group = new Group(
+      id, name, undefined, parent, direction,
+      dragAndDropBehavior || 'default', spacing);
     const groupChildren: VisualElement[] = [];
     for (const child of children) {
       let elem: VisualElement;

@@ -1,3 +1,19 @@
 body {
   background-color: #222;
+  color: white;
+}
+
+.group {
+  fill: #2b2a2b;
+  stroke: white;
+}
+
+.node {
+  fill: #657a80;
+  stroke: white;
+}
+
+.placeholder {
+  fill: #657a80;
+  stroke: white;
 }
