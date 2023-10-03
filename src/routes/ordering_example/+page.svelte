@@ -3,9 +3,11 @@
 
   const data = {
     name: 'root',
+    draggable: false,
     children: [{
       name: 'innera',
-      direction: 'VERTICAL',
+      width: 600,
+      direction: 'horizontal',
       children: [
         {
           name: 'nodea1'
@@ -17,7 +19,7 @@
     },
     {
       name: 'innerb',
-      direction: 'VERTICAL',
+      direction: 'vertical',
       dragAndDropBehavior: 'ordering',
       children: [
         {
@@ -28,7 +30,7 @@
         },
         {
           name: 'innerc',
-          direction: 'HORIZONTAL',
+          direction: 'horizontal',
           dragAndDropBehavior: 'ordering',
           children: [
             {
@@ -59,7 +61,7 @@
         }
       ]
     }]
-  }
+  };
 </script>
 <NodeGraph data={data}>
 </NodeGraph>

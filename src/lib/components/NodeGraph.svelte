@@ -1,32 +1,20 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-  import GroupModel from "$lib/model/Group";
-  import Group from "$lib/components/Group.svelte"
-  import DragAndDropManager from "$lib/utils/DragAndDropManager";
-  import DragAndDropPlaceholder from './DragAndDropPlaceholder.svelte';
+  import type IGroup from '$lib/model/IGroup';
   import graph from '$lib/store/graph';
+  import Group from './Group.svelte';
+  export let data: IGroup;
 
-  export let data: any;
-  let rootGroup:SVGElement;
-
-  const graphInst = GroupModel.fromJSON(data);
-  // render graph
-  graphInst.calculateDimensions();
-  graphInst.calculatePositions();
-  graph.set(graphInst);
-  let dragAndDrop:DragAndDropManager= new DragAndDropManager(graphInst);
-  onMount(() => {
-    dragAndDrop.afterMount(rootGroup);
-  });
+  graph.set(data);
+  const mdata: any = data;
+  let foos: number = 0;
 </script>
 
-<!-- SVG-renderer -->
-<svg style="width: 100%; height: 100%; margin: 0; padding: 0; position: absolute; top: 0; left: 0;" 
-    on:pointerdown={dragAndDrop.onPointerDown.bind(dragAndDrop)}
-    on:pointermove={dragAndDrop.onPointerMove.bind(dragAndDrop)}
-    on:pointerup={dragAndDrop.onPointerUp.bind(dragAndDrop)}>
-  <!-- render graph -->
-  <Group group={$graph} bind:svgGroupElement={rootGroup} />
-  <DragAndDropPlaceholder
-  />
-</svg>
+<!-- render graph -->
+<Group data={$graph} />
+<br />
+<div>
+  <button on:click={() => {
+    mdata.children[1].children.splice(1, 0, {name: 'foo' + foos++});
+    graph.set(mdata);}
+  }>x</button>
+</div>

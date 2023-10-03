@@ -1,7 +1,7 @@
 import { writable } from 'svelte/store';
-import type Group from "../model/Group"
+import type IGroup from "../model/IGroup"
 
-const { subscribe, set, update } = writable<Group>();
+const { subscribe, set, update } = writable<IGroup>();
 
 export default {
   subscribe,

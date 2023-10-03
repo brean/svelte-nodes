@@ -1,27 +1,22 @@
 <script lang="ts">
-  import type NodeModel from '$lib/model/Node';
-  import { MIN_HEIGHT, MIN_WIDTH } from '$lib/model/VisualElement';
-  export let node:NodeModel;
-  // position relative to the parent group
-  const x = node.x || 0
-  const y = node.y || 0
-  // padding = padding of the content inside the node.
-  const padding = node.padding || 0
-  // width and height include content
-  const width = node.width || MIN_WIDTH;
-  const height = node.height || MIN_HEIGHT;
+  import type IGroup from "$lib/model/IGroup";
+  import type INode from "$lib/model/INode";
+  import { dragStart } from "$lib/util/drag_and_drop";
+  
+  const DEFAULT_WIDTH = 100;
+  const DEFAULT_HEIGHT = 20;
+
+  export let data: INode;
+  export let childIdx: number;
+  export let parent: IGroup;
+
+  $: data.id = `${parent.id}/n${childIdx}`;
 
 </script>
-<g transform="translate({x}, {y})">
-  <rect 
-    id={node.id}
-    width={width}
-    height={height}
-    class="node"
-    rx="7" stroke-width="1" />
-  <foreignObject x={padding} y={padding} width={width} height={height} pointer-events="none">
-    <div>
-      { node.name }
-    </div>
-  </foreignObject>
-</g>
+<li 
+  id={data.id}
+  draggable={data.draggable || true}
+  on:dragstart={(event) => dragStart(event, data.id)}
+  class={`node ${parent.direction || 'horizontal'}`}>
+    {data.name}
+</li>

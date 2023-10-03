@@ -4,13 +4,33 @@ body {
 }
 
 .group {
-  fill: #2b2a2b;
-  stroke: white;
+  list-style-type: none;
+  float: left;
+  background-color: #2b2a2b;
+  border: 1px solid white;
+  margin: 4px;
+  padding: 8px;
+  border-radius: 6px;
+}
+.group .vertical {
+  float: left;
+}
+.group .horizontal {
+  display: block;
 }
 
 .node {
-  fill: #657a80;
-  stroke: white;
+  background-color: #657a80;
+  border: 1px solid white;
+  margin: 4px;
+  padding: 10px;
+  display: inline-block;
+}
+.node.vertical {
+  display: inline-block;
+}
+.node.horizontal {
+  display: block;
 }
 
 .placeholder {

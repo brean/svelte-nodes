@@ -1,38 +1,48 @@
 <script lang="ts">
-  import GroupModel from '$lib/model/Group';
-  import NodeModel from '$lib/model/Node';
-  import Node from './Node.svelte';
+  import type IGroup from "$lib/model/IGroup";
+  import graph from "$lib/store/graph";
+  import { dragStart, drop } from "$lib/util/drag_and_drop";
+  import { isGroup } from "$lib/util/group_helper";
+  import Node from "./Node.svelte";
 
-  export let group:GroupModel;
-  let groupChildren = group.children;
-  const x = group.x || 0;
-  const y = group.y || 0;
-  const padding = group.padding || 0;
-  export let svgGroupElement: SVGElement;
+  export let parent: IGroup | undefined = undefined;
+  export let childIdx: number | undefined = undefined;
+  export let data: IGroup;
+  let style = '';
+  if (data.width) {
+    style = `max-width: ${data.width}px;`;
+  }
+  if (data.height) {
+    style = `${style}max-height: ${data.height}px;`;
+  }
+
+  $: {
+    if (parent) {
+      data.id = `${parent.id}/g${childIdx}`;
+    } else {
+      data.id = 'r';
+    }
+  }
 </script>
 
-<g transform="translate({x}, {y})" bind:this={svgGroupElement}>
-  <rect
-    id={group.id}
-    width={group.width}
-    height={group.height}
-    rx="4" stroke-width="1"
-    class="group" />
-  <foreignObject x={padding} y={padding} width={group.width} height={20} pointer-events="none">
-    <div>
-      { group.name }
-    </div>
-  </foreignObject>
-  <slot />
-  {#if groupChildren}
-    {#each groupChildren as child}
-      {#if child instanceof GroupModel}
-        <svelte:self group={child} />
-      {:else if child instanceof NodeModel}
-        <Node node={child} />
+<li
+  id={data.id}
+  class={`group ${(data.parent && data.parent.direction) || 'vertical'}`}
+  style={style} draggable={data.draggable || true}
+  on:dragstart={(event) => dragStart(event, data.id)}
+  on:drop={(event) => drop(event, data.id)}
+  on:dragover={(event) => event.preventDefault()}
+  >
+  <span>{data.name}</span><br />
+  {#if data.children}
+    {#each data.children as child, childIdx (child)}
+      {#if isGroup(child)}
+        <svelte:self data={child} childIdx={childIdx} parent={data} />
+      {:else if child.name}
+        <Node data={child} childIdx={childIdx} parent={data}></Node>
       {:else}
         <div>?</div>
       {/if}
     {/each} 
   {/if}
-</g>
+</li>
