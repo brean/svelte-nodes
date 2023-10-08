@@ -1,5 +1,7 @@
 <script lang="ts">
   import NodeGraph from "$lib/components/NodeGraph.svelte";
+  import graph from "$lib/store/graph";
+
 
   const data = {
     name: 'root',
@@ -62,6 +64,17 @@
       ]
     }]
   };
+
+  const mdata: any = data;
+  let foos: number = 0;
 </script>
 <NodeGraph data={data}>
 </NodeGraph>
+
+<br />
+<div>
+  <button on:click={() => {
+    mdata.children[1].children.splice(1, 0, {name: 'foo' + foos++});
+    graph.set(mdata);}
+  }>x</button>
+</div>
