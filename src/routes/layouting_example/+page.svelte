@@ -25,13 +25,21 @@
         },
         {
           name: 'inner2b',
-          direction: 'VERTICAL',
+          direction: 'vertical',
           children: [
             {
               name: 'node2b1'
             },
             {
               name: 'node2b2'
+            },
+            {
+              name: 'some_group_between_2b2_3',
+              children: [
+                {
+                  name: "subinner2b"
+                }
+              ]
             },
             {
               name: 'node2b3'

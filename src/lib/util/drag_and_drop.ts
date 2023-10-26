@@ -1,61 +1,72 @@
 import type IGroup from "$lib/model/IGroup";
-import type IVisualElement from "$lib/model/IVisualElement";
+import type INode from "$lib/model/INode";
 import graph from "$lib/store/graph";
-import { elemenById, isGroup } from "./group_helper";
+import { isGroup } from "./group_helper";
 
-let isDragging = false;
-
-export function dragStart(event: DragEvent, id?: string, parent?: string) {
-  if (!event.dataTransfer || !id || isDragging) {
-    return;
-  }
-  event.dataTransfer.setData('text/plain', JSON.stringify({ id, parent }));
-  isDragging = true;
-}
-
-export function drop(event: DragEvent, elem: IVisualElement, root: IGroup) {
-  event.preventDefault();
-  if (!event.dataTransfer) {
-    return;
-  }
-  event.stopImmediatePropagation();
-  // id of the element we want to drop.
-  const dragTxt = event.dataTransfer.getData('text/plain')
-  console.log(dragTxt)
-  const dragData = JSON.parse(dragTxt);
-  let dragId = dragData.id;
-  let dragParentId = dragData.parent;
-  const dragParent = elemenById(root, dragParentId);
-  if (!dragParent || !dragParent.children || !dragParentId || dragParentId === '') {
+function removeFromParent(
+    parent: IGroup, elem: INode | IGroup): INode | IGroup | undefined {
+  if (!parent.children) {
     return
   }
-  let index = Number(dragId.slice(dragId.lastIndexOf('/') + 2));
-  // get element from its old parent, remove it there so we can add it to the
-  // new element, the dropParent.
-  const dragElement = dragParent.children.splice(index, 1)[0];
-  let dropIndex = -1;
-  let dropParent;
-  if (isGroup(elem)) {
-    // we dropped to a group
-    console.log('dropped onto a group')
-    dropParent = elem as IGroup
-  } else {
-    dropParent = ((elem as any).parent as IGroup)
-    const dropId = elem.id as string;
-    dropIndex = Number(dropId.slice(dropId.lastIndexOf('/') + 2));
+  const idx = parent.children.findIndex(x => x.id == elem.id);
+  if (idx > -1) {
+    const child = parent.children.splice(idx, 1);
+    if (child.length > 0) {
+      return child[0];
+    }
   }
-  if (!dropParent) {
-    dropParent = root;
+}
+
+// TODO: create a class to store the currently dragging element, its parent
+// and other data, should reduce some code!
+export class DragAndDropManager {
+  dragElement: INode | IGroup | undefined = undefined;
+  dragParent: IGroup | undefined = undefined;
+  root: IGroup;
+  isDragging = false
+
+  constructor(root: IGroup) {
+    this.root = root;
   }
-  if (!dropParent.children) {
-    dropParent.children = []
+
+  dragStart(elem?: INode | IGroup, parent?: IGroup) {
+    if (!elem || this.isDragging) {
+      return;
+    }
+    this.dragElement = elem;
+    this.dragParent = parent;
+    this.isDragging = true;
   }
-  console.log(dropParent.id);
-  if (dropIndex < 0) {
-    dropParent.children.push(dragElement as IVisualElement);
-  } else {
-    dropParent.children.splice(dropIndex, 0, dragElement)
+
+  drop(event: DragEvent, elem: INode | IGroup, parent?: IGroup) {
+    event.preventDefault();
+    if (!this.dragElement) {
+      return;
+    }
+    event.stopImmediatePropagation();
+
+    if (!this.dragParent) {
+      return
+    }
+
+    // remove because we will always drop somewhere, default will be root.
+    removeFromParent(this.dragParent, this.dragElement);
+    // figure out where we can add the new element
+    if (isGroup(elem)) {
+      const grp = (elem as IGroup)
+      grp.children = grp.children || [];
+      grp.children.push(this.dragElement);
+    } else if (parent && parent.children) {
+      const dropIndex = parent.children.findIndex(x => x.id === elem.id)
+      console.log(elem, parent, this.dragElement, this.dragParent, dropIndex)
+      parent.children.splice(dropIndex, 0, this.dragElement)
+    } else if (!parent) {
+      parent = this.root;
+      // when we drag it somewhere on the root group we add it (same for root)
+      parent.children = parent.children || [];
+      parent.children.push(this.dragElement);
+    }
+    this.isDragging = false;
+    graph.set(this.root);
   }
-  isDragging = false;
-  graph.set(root);
 }

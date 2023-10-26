@@ -5,6 +5,8 @@ export function isGroup(element: IVisualElement) {
   return 'children' in element;
 }
 
+// TODO: flatten to get a simple dict with all elements and their id as cache
+// instead, might be faster then getting the element all the time.
 export function elemenById(root: IGroup, id: string): IGroup | undefined {
   if (id === 'r') {
     return root;
