@@ -9,6 +9,10 @@
   const dragMgr = new DragAndDropManager(data);
 </script>
 
+<svg class="connections">
+
+</svg>
+
 <!-- render graph -->
 <ul class="subgroup">
 <Group dragMgr={dragMgr} data={$graph} root={data} />
