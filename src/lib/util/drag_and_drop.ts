@@ -75,7 +75,7 @@ export class DragAndDropManager {
         if (parent && (parent.showName || parent.showName === undefined)) {
           y -= parent.nameHeight || 20;
         }
-        
+
         if (this.dragParent === elem) {
           x -= this.pointerPosition.x;
           y -= this.pointerPosition.y;
@@ -86,14 +86,11 @@ export class DragAndDropManager {
 
         this.dragElement.x = Math.floor(x);
         this.dragElement.y = Math.floor(y);
-        console.log(box);
-        console.log(x, y);
       }
       grp.children = grp.children || [];
       grp.children.push(this.dragElement);
     } else if (parent && parent.children) {
       const dropIndex = parent.children.findIndex(x => x.id === elem.id)
-      console.log(elem, parent, this.dragElement, this.dragParent, dropIndex)
       parent.children.splice(dropIndex, 0, this.dragElement)
     } else if (!parent) {
       parent = this.root;
