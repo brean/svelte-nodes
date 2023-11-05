@@ -9,7 +9,7 @@
     children: [{
       name: 'innera',
       width: 600,
-      direction: 'horizontal',
+      layout: 'horizontal',
       children: [
         {
           name: 'nodea1'
@@ -21,7 +21,7 @@
     },
     {
       name: 'innerb',
-      direction: 'vertical',
+      layout: 'vertical',
       dragAndDropBehavior: 'ordering',
       children: [
         {
@@ -32,7 +32,7 @@
         },
         {
           name: 'innerc',
-          direction: 'horizontal',
+          layout: 'horizontal',
           dragAndDropBehavior: 'ordering',
           children: [
             {

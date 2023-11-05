@@ -6,6 +6,8 @@ export default interface IVisualElement {
   showName?: boolean
   x?: number;
   y?: number;
+  max_height?: number;
+  max_width?: number;
   width?: number; // full width including padding
   height?: number; // full height including padding
   visible?: boolean;

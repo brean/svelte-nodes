@@ -12,15 +12,32 @@
   export let root: IGroup;
   let style = '';
   if (data.width) {
-    style = `max-width: ${data.width}px;`;
+    style = `width: ${data.width}px;`;
   }
   if (data.height) {
-    style = `${style}max-height: ${data.height}px;`;
+    style = `${style}height: ${data.height}px;`;
+  }
+  if (data.max_width) {
+    style = `${style}max-width: ${data.max_width}px;`;
+  }
+  if (data.max_height) {
+    style = `${style}max-height: ${data.max_height}px;`;
   }
 
   $: {
     if (parent) {
       data.id = `${parent.id}/g${childIdx}`;
+      if (parent.layout === 'box') {
+        if (data.y || data.x) {
+          style = `${style}position: absolute;`;
+        }
+        if (data.x) {
+          style = `${style}left: ${data.x}px;`;
+        }
+        if (data.y) {
+          style = `${style}top: ${data.y}px;`;
+        }
+      }
     } else {
       data.id = 'r';
     }
@@ -29,17 +46,19 @@
 
 <li
   id={data.id}
-  class={`group ${(data.parent && data.parent.direction) || 'vertical'}`}
-  style={style} draggable={data.draggable || true}
-  on:dragstart={() => {
-    dragMgr.dragStart(data, parent)
+  class={`group ${(parent && parent.layout) || 'vertical'}`}
+  style={style} draggable={data.draggable === undefined ? true : data.draggable}
+  on:dragstart={(event) => {
+    dragMgr.dragStart(event, data, parent)
   }}
   on:drop={(event) => {
     dragMgr.drop(event, data, parent)
   }}
   on:dragover={(event) => event.preventDefault()}
   >
-  <span>{data.name}</span>
+  {#if data.showName || data.showName === undefined}
+    <span style="height: {data.nameHeight || 20}">{data.name}</span>
+  {/if}
   {#if data.children}
     <ul class="subgroup">
     {#each data.children as child, childIdx (child)}

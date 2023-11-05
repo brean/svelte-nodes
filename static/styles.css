@@ -7,6 +7,7 @@ body {
   list-style-type: none;
   padding-inline-start: 0px;
   margin-block: 0;
+  position: relative;
   width: fit-content;
 }
 
@@ -19,10 +20,10 @@ body {
   padding: 8px;
   border-radius: 6px;
 }
-.group .vertical {
+.group.vertical {
   float: left;
 }
-.group .horizontal {
+.group.horizontal {
   display: block;
 }
 
@@ -34,7 +35,7 @@ body {
   display: inline-block;
 }
 .node.vertical {
-  display: inline-block;
+   float: left;
 }
 .node.horizontal {
   display: block;

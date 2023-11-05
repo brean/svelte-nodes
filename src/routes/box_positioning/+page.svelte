@@ -1,31 +1,16 @@
 <script lang="ts">
   import NodeGraph from "$lib/components/NodeGraph.svelte";
+  import type IGroup from "$lib/model/IGroup";
 
   const data = {
     name: 'root',
-    children: [
-      {
-        name: 'outer1',
-        children: [{
-          name: 'inner1',
-          children: [{
-            name: 'node1',
-          }]
-        }]
-      },
-      {
-        name: 'outer2',
-        children: [{
-          name: 'inner2a',
-          children: [
-            {
-              name: 'node2a1'
-            }
-          ]
-        },
+    draggable: false,
+    children: [{
+      name: 'parent',
+      children: [
         {
           name: 'inner2b',
-          layout: 'horizontal',
+          layout: 'vertical',
           children: [
             {
               name: 'node2b1'
@@ -53,24 +38,31 @@
           ]
         },
         {
-          name: 'inner2c',
+          name: 'innera',
+          draggable: false,
+          layout: 'box',
+          width: 600,
+          height: 500,
           children: [
             {
-              name: 'node2c1'
+              name: 'nodea1'
             },
             {
-              name: 'node2c2'
+              name: 'nodea2',
+              y: 150
+            },
+            {
+              name: 'nodea3',
+              x: 120
             }
           ]
-        },
-        {
-          name: 'no_children',
-          width: 300,
-          children: []
-        }]
+        } as IGroup
+      ]},
+      {
+        name: 'another node'
       }
-    ]
-  }
+  ]} as IGroup;
 </script>
+
 <NodeGraph data={data}>
 </NodeGraph>
